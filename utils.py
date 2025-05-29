@@ -181,11 +181,11 @@ def conectar_banco():
     """Conecta ao banco de dados PostgreSQL."""
     try:
         conn = psycopg2.connect(
-            dbname=os.environ.get("PGDATABASE"),
-            user=os.environ.get("PGUSER"),
-            password=os.environ.get("PGPASSWORD"),
-            host=os.environ.get("DATABASE_PUBLIC_URL"),
-            port=os.environ.get("PGPORT")
+            dbname= "railway",
+            user= "postgres",
+            password= "xVJYvoTkhWJsWfspDfzEuJdRWaFcfLfd",
+            host= "postgresql://postgres:xVJYvoTkhWJsWfspDfzEuJdRWaFcfLfd@shuttle.proxy.rlwy.net:57117/railway",
+            port= "5432"
         )
         return conn
     except psycopg2.Error as e:

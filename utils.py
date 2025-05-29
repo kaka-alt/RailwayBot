@@ -6,6 +6,8 @@ from datetime import datetime
 from config import CSV_ORGAOS, CSV_ASSUNTOS, CSV_REGISTRO, FOTO_PATH, CAMINHO_BASE  # Importe as variáveis necessárias
 import logging
 
+
+CSV_PATH = "data/registros.csv"
 logger = logging.getLogger(__name__)  # Logger para este módulo
 
 

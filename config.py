@@ -3,7 +3,7 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 CAMINHO_BASE= "."
 CSV_ORGAOS = "listas/orgaos.csv"
-CSV_PATH = "data"
+CSV_PATH = "data/registros.csv"
 FOTO_PATH = "fotos"
 CSV_ASSUNTOS = "listas/assuntos.csv"
 CSV_REGISTRO = "data/registro.csv"

@@ -184,7 +184,7 @@ def conectar_banco():
             dbname=os.environ.get("PGDATABASE"),
             user=os.environ.get("PGUSER"),
             password=os.environ.get("PGPASSWORD"),
-            host=os.environ.get("PGHOST"),
+            host=os.environ.get("DATABASE_PUBLIC_URL"),
             port=os.environ.get("PGPORT")
         )
         return conn

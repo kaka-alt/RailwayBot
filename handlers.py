@@ -446,8 +446,8 @@ async def confirmacao(update, context):
     data = query.data
 
     if data == "confirmar_salvar":
-        utils.salvar_csv(context.user_data)
-        await query.edit_message_text("✅ Dados salvos com sucesso! Obrigado pelo registro.")
+        utils.salvar_no_banco(context.user_data)  # Altere aqui
+        await query.edit_message_text("✅ Dados salvos com sucesso no banco de dados! Obrigado pelo registro.")
         context.user_data.clear()
         return ConversationHandler.END
 
@@ -455,6 +455,7 @@ async def confirmacao(update, context):
         await query.edit_message_text("❌ Operação cancelada no resumo. Os dados não foram salvos.")
         context.user_data.clear()
         return ConversationHandler.END
+    
 # --- Cancelar ---
 
 async def cancelar(update: Update, context: ContextTypes.DEFAULT_TYPE):

@@ -3,8 +3,6 @@ import stat
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-
 # CAMINHO_BASE -  Relative to the project root (where Procfile is)
 CAMINHO_BASE = "."  # Current directory
 CSV_ORGAOS = os.path.join(CAMINHO_BASE, "listas", "orgaos.csv")

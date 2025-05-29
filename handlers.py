@@ -220,20 +220,20 @@ async def data(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         if query.data == "data_hoje":
             dt = datetime.now()
-            context.user_data['data'] = dt.strftime("%d-%m-%Y")
-            await query.message.edit_text(f"✔️ Data registrada: {dt.strftime('%d/%m/%Y')}")
+            context.user_data['data'] = dt.strftime("%Y-%m-%d")
+            await query.message.edit_text(f"✔️ Data registrada: {dt.strftime('%Y/%m/%d')}")
             await query.message.reply_text("📷 Por favor, envie a foto:")
             return "FOTO"
 
         elif query.data == "data_manual":
-            await query.message.edit_text("Digite a data no formato DD/MM/AAAA:")
+            await query.message.edit_text("Digite a data no formato AAAA/MM/DD:")
             return "DATA_MANUAL"
 
     else:
         texto = update.message.text.strip()
         try:
-            dt = datetime.strptime(texto, "%d/%m/%Y")
-            context.user_data['data'] = dt.strftime("%d-%m-%Y")
+            dt = datetime.strptime(texto, "%Y/%m/%d")
+            context.user_data['data'] = dt.strftime("%Y-%m-%d")
             await update.message.reply_text("✔️ Data registrada com sucesso.")
             await update.message.reply_text("📷 Por favor, envie a foto:")
             return "FOTO"

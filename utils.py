@@ -6,6 +6,7 @@ from datetime import datetime
 from config import *
 from globals import user_data
 import psycopg2  
+import urllib.parse
 
 # Funções utilitárias para o bot
 
@@ -180,12 +181,21 @@ def salvar_csv(data: dict):
 def conectar_banco():
     """Conecta ao banco de dados PostgreSQL."""
     try:
+        url = os.environ.get("DATABASE_PUBLIC_URL")
+        parsed_url = urllib.parse.urlparse(url)
+
+        dbname = parsed_url.path[1:]  # Remove a primeira barra
+        user = parsed_url.username
+        password = parsed_url.password
+        host = parsed_url.hostname
+        port = parsed_url.port
+
         conn = psycopg2.connect(
-            dbname= "railway",
-            user= "postgres",
-            password= "xVJYvoTkhWJsWfspDfzEuJdRWaFcfLfd",
-            host= "postgresql://postgres:xVJYvoTkhWJsWfspDfzEuJdRWaFcfLfd@shuttle.proxy.rlwy.net:57117/railway",
-            port= "5432"
+            dbname=dbname,
+            user=user,
+            password=password,
+            host=host,
+            port=port
         )
         return conn
     except psycopg2.Error as e:

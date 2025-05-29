@@ -1,1 +1,1 @@
-procfile_content = "worker: python botrailway/main.py"
+worker: python main.py

@@ -51,7 +51,10 @@ def upload_to_onedrive(nome_arquivo, pasta_destino):
             headers=headers,
             data=f
         )
-        print(response.status_code, response.json())
+        print(f"Status Code: {response.status_code}")
+        print(f"Response: {response.text}")  # Imprime o conteúdo da resposta
+        if response.status_code != 200 and response.status_code != 201:  # Verifica se não foi sucesso
+            print(f"Erro ao enviar {nome_arquivo} para o OneDrive!")
 
 # Envia ambos
 upload_to_onedrive("registros.xlsx", "Git")

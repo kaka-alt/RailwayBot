@@ -1,20 +1,30 @@
 import logging
 import os
+import threading
+from dotenv import load_dotenv
+
+# Telegram Bot
 from telegram.ext import (
     ApplicationBuilder, CommandHandler, MessageHandler,
     CallbackQueryHandler, ConversationHandler, filters
 )
 import handlers
-from dotenv import load_dotenv  # Import load_dotenv
 from handlers import *
 
-load_dotenv()  # Load environment variables from .env
+# FastAPI
+from fastapi import FastAPI
+import uvicorn
 
+# Carrega variáveis de ambiente
+load_dotenv()
+
+# Configura logs
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
 
+# --- FUNÇÕES DO BOT ---
 async def cancelar(update, context):
     await update.message.reply_text("Operação cancelada pelo usuário.")
     context.user_data.clear()
@@ -23,11 +33,11 @@ async def cancelar(update, context):
 async def start(update, context):
     await update.message.reply_text("Olá! Use /iniciar para começar o registro de uma ocorrência.")
 
-def main():
-    token = os.getenv("BOT_TOKEN")  # Get the token from the environment
+def iniciar_bot():
+    token = os.getenv("BOT_TOKEN")
     if not token:
         print("Error: BOT_TOKEN not found in environment variables or .env file")
-        return  # Exit if the token is not found
+        return
 
     application = ApplicationBuilder().token(token).build()
 
@@ -62,10 +72,24 @@ def main():
         fallbacks=[CommandHandler('cancelar', cancelar)],
     )
 
-    application.add_handler(CommandHandler('start', start))  # Use 'start' instead of 'oi'
+    application.add_handler(CommandHandler('start', start))
     application.add_handler(conv_handler)
 
     application.run_polling()
 
-if __name__ == '__main__':
-    main()
+
+# --- FASTAPI APP PARA EXPORTAÇÃO ---
+app = FastAPI()
+
+@app.get("/export")
+def exportar():
+    os.system("python export_to_excel.py")
+    return {"status": "Exportação iniciada"}
+
+# --- PONTO DE ENTRADA ---
+if __name__ == "__main__":
+    # Inicia o bot em uma thread separada
+    threading.Thread(target=iniciar_bot).start()
+
+    # Inicia o servidor FastAPI
+    uvicorn.run(app, host="0.0.0.0", port=8000)

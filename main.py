@@ -1,10 +1,8 @@
 import logging
 import os
 import threading
-import asyncio
 from dotenv import load_dotenv
 
-# Telegram Bot
 from telegram.ext import (
     ApplicationBuilder, CommandHandler, MessageHandler,
     CallbackQueryHandler, ConversationHandler, filters
@@ -12,20 +10,16 @@ from telegram.ext import (
 import handlers
 from handlers import *
 
-# FastAPI
 from fastapi import FastAPI
 import uvicorn
 
-# Carrega variáveis de ambiente
 load_dotenv()
 
-# Configura logs
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
 
-# --- FUNÇÕES DO BOT ---
 async def cancelar(update, context):
     await update.message.reply_text("Operação cancelada pelo usuário.")
     context.user_data.clear()
@@ -34,21 +28,21 @@ async def cancelar(update, context):
 async def start(update, context):
     await update.message.reply_text("Olá! Use /iniciar para começar o registro de uma ocorrência.")
 
+def iniciar_fastapi():
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+
 def iniciar_bot():
     token = os.getenv("BOT_TOKEN")
     if not token:
         print("Error: BOT_TOKEN not found in environment variables or .env file")
         return
 
-    # Criar e setar event loop para esta thread
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-
     application = ApplicationBuilder().token(token).build()
 
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('iniciar', handlers.iniciar_colaborador)],
         states={
+            # ... seus estados ...
             "COLABORADOR": [CallbackQueryHandler(handlers.colaborador_button, pattern="^colaborador_")],
             "COLABORADOR_MANUAL": [MessageHandler(filters.TEXT & ~filters.COMMAND, handlers.colaborador_manual)],
             "ORGAO_PUBLICO_KEYWORD": [MessageHandler(filters.TEXT & ~filters.COMMAND, handlers.buscar_orgao)],
@@ -82,7 +76,6 @@ def iniciar_bot():
 
     application.run_polling()
 
-# --- FASTAPI APP PARA EXPORTAÇÃO ---
 app = FastAPI()
 
 @app.get("/export")
@@ -90,10 +83,9 @@ def exportar():
     os.system("python export_to_excel.py")
     return {"status": "Exportação iniciada"}
 
-# --- PONTO DE ENTRADA ---
 if __name__ == "__main__":
-    # Inicia o bot em uma thread separada com event loop
-    threading.Thread(target=iniciar_bot, daemon=True).start()
+    # FastAPI rodando em thread daemon (background)
+    threading.Thread(target=iniciar_fastapi, daemon=True).start()
 
-    # Inicia o servidor FastAPI na thread principal
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    # Bot rodando no main thread (obrigatório para PTB lidar com sinais)
+    iniciar_bot()

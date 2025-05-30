@@ -1,8 +1,8 @@
 import os
 import pandas as pd
-from dotenv import load_dotenv
 import requests
 from msal import ConfidentialClientApplication
+from dotenv import load_dotenv
 from utils import conectar_banco
 
 load_dotenv()
@@ -10,9 +10,7 @@ load_dotenv()
 def exportar_csvs():
     conn = conectar_banco()
     if not conn:
-        print("Erro ao conectar ao banco")
         return
-
     registros = pd.read_sql("SELECT * FROM registros", conn)
     demandas = pd.read_sql("SELECT * FROM demandas", conn)
     os.makedirs("backup", exist_ok=True)
@@ -36,11 +34,11 @@ def enviar_para_onedrive(filepath, nome_destino, token):
     }
     with open(filepath, "rb") as f:
         r = requests.put(
-            f"https://graph.microsoft.com/v1.0/me/drive/root:/Backups/{nome_destino}:/content",
+            f"https://graph.microsoft.com/v1.0/me/drive/root:/Backup/{nome_destino}:/content",
             headers=headers,
             data=f
         )
-    print(f"{nome_destino} =>", r.status_code, r.text)
+    print(f"{nome_destino} =>", r.status_code, r.reason)
 
 def executar_backup():
     exportar_csvs()

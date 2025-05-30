@@ -1,6 +1,7 @@
 import logging
 import os
 import threading
+import asyncio
 from dotenv import load_dotenv
 
 # Telegram Bot
@@ -38,6 +39,10 @@ def iniciar_bot():
     if not token:
         print("Error: BOT_TOKEN not found in environment variables or .env file")
         return
+
+    # Criar e setar event loop para esta thread
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
 
     application = ApplicationBuilder().token(token).build()
 
@@ -77,7 +82,6 @@ def iniciar_bot():
 
     application.run_polling()
 
-
 # --- FASTAPI APP PARA EXPORTAÇÃO ---
 app = FastAPI()
 
@@ -88,8 +92,8 @@ def exportar():
 
 # --- PONTO DE ENTRADA ---
 if __name__ == "__main__":
-    # Inicia o bot em uma thread separada
-    threading.Thread(target=iniciar_bot).start()
+    # Inicia o bot em uma thread separada com event loop
+    threading.Thread(target=iniciar_bot, daemon=True).start()
 
-    # Inicia o servidor FastAPI
+    # Inicia o servidor FastAPI na thread principal
     uvicorn.run(app, host="0.0.0.0", port=8000)

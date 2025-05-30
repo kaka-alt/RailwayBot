@@ -54,5 +54,5 @@ def upload_to_onedrive(nome_arquivo, pasta_destino):
         print(response.status_code, response.json())
 
 # Envia ambos
-upload_to_onedrive("registros.xlsx", "BotRailway")
-upload_to_onedrive("demandas.xlsx", "BotRailway")
+upload_to_onedrive("registros.xlsx", "Git")
+upload_to_onedrive("demandas.xlsx", "Git")

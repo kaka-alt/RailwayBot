@@ -57,5 +57,5 @@ def upload_to_onedrive(nome_arquivo, pasta_destino):
             print(f"Erro ao enviar {nome_arquivo} para o OneDrive!")
 
 # Envia ambos
-upload_to_onedrive("registros.xlsx", "Git")
-upload_to_onedrive("demandas.xlsx", "Git")
+upload_to_onedrive("registros.xlsx", "DadosBot")
+upload_to_onedrive("demandas.xlsx", "DadosBot")
